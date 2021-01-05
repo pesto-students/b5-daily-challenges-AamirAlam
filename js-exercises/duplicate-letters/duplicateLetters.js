@@ -1,16 +1,20 @@
 
-function duplicateLetters(args) {
-  let char_map = {}
-  for(let char of args ) {
-    if(Object.keys(char_map).includes(char) ){
-      char_map[char] += 1 
+function duplicateLetters(letters) {
+  const charMap = {}
+  for(let char of letters ) {
+    if(Object.keys(charMap).includes(char) ){
+      charMap[char] += 1 
     }else{
-      char_map[char] = 1
+      charMap[char] = 1
     }
   }
-  let max_frequency = Math.max(...Object.values(char_map))
+  const maxFrequency = Math.max(...Object.values(charMap))
   
-  return max_frequency > 1 ? max_frequency : false;
+  if (maxFrequency > 1) {
+    return maxFrequency;
+  }else{
+    return false;
+  }
 }
 export {
   duplicateLetters,
