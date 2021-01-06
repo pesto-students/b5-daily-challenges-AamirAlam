@@ -4,7 +4,7 @@ const alphabeticShift = string => {
      throw 'Invalid input! It must be a string'
   }
   const shiftedString = [];
-  for(let char of string){
+  for(const char of string){
 
     if (char === 'z' || char === 'Z') {
       shiftedString.push( String.fromCharCode( (char.charCodeAt() +1) - 26 ))
