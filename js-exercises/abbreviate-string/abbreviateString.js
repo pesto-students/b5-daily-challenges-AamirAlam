@@ -1,19 +1,22 @@
 // import { isString } from "util";
 
-function abbreviateString(str) {
+function abbreviateString(fullName) {
 
-    if (typeof str !== 'string'){
-        throw new TypeError('Invalid argument! it must be a string');
+    if (fullName == null) {
+        throw new TypeError(`Expected string but found null`);
+    }
+    if (typeof(fullName) !== 'string'){
+        throw new TypeError(`Expected string but found ${typeof(fullName)}`);
     }
     
-    str = str.trim()
-    if (str.indexOf(' ') < 0 ) {
-        return str;    
+    
+    const allWords = fullName.split(' ')
+    if (allWords.length === 1) {
+        return fullName;    
     }else{
-        const firstWord = str.slice(0,str.indexOf(' '))
-        const lastWord =  str.slice(str.lastIndexOf(' ')+1, str.length )
+        const firstWord = allWords[0]
+        const lastWord =  allWords[allWords.length-1]
         return  firstWord+" "+lastWord[0].toUpperCase()+"."
     }
 }
-
 export { abbreviateString };
