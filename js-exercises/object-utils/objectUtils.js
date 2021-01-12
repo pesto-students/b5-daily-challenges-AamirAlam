@@ -16,7 +16,7 @@ const isObject = (object) => {
  * @description Utility function to classify provided parameter type among 'object', 'array', 'string', 'number', 'null', 'undefined', 'string'
  */
 
-const objectType = (object) => { 
+const getObjectType = (object) => { 
   if (Array.isArray(object)){
     return 'array';
   }
@@ -41,7 +41,7 @@ const objectType = (object) => {
 const map = (object, callback) => {
     
   if (!isObject(object)) {
-    throw new TypeError(`Expected 'object' found '${objectType(object)}'`)
+    throw new TypeError(`Expected 'object' found '${getObjectType(object)}'`)
   }
     const result = {};
     for(const [key,val] of Object.entries(object)){
@@ -61,7 +61,7 @@ const map = (object, callback) => {
 
 const filter = (object, callback) => {
   if (!isObject(object)) {
-    throw new TypeError(`Expected 'object' found '${objectType(object)}'`);
+    throw new TypeError(`Expected 'object' found '${getObjectType(object)}'`);
   }
   const result = {}
   for( const [key, value] of Object.entries(object)){
@@ -82,11 +82,11 @@ const filter = (object, callback) => {
 
 const invert = (object) => {
   if(!isObject(object)) {
-    throw new TypeError(`Expected 'object' found '${objectType(object)}'`);
+    throw new TypeError(`Expected 'object' found '${getObjectType(object)}'`);
   }
   const result = {};
   for( const [key, value] of Object.entries(object)){
-      result[value] = key
+      result[value] = key;
   }
   return result;
 }
@@ -100,9 +100,14 @@ const invert = (object) => {
 
 const isObjectArray = (objects) => {
   let res = {flag:true,message:''}
+  
+  if (!Array.isArray(objects)){
+    return {flag:false, message:`Expected array of 'objects' found '${getObjectType(objects)}'`};
+  }
+
   for (const object of objects) {
     if(!isObject(object)){
-      res = {flag:false, message:`Expected 'objects' found '${objectType(object)}' in array element`}
+      res = {flag:false, message:`Expected array of 'objects' found '${getObjectType(object)}' in array element`};
       break;
     }
   }
@@ -142,7 +147,7 @@ const merge = (objects) => {
 const all = (object, callback) => {
 
   if (!isObject(object)) {
-    throw new TypeError(objectType(object));
+    throw new TypeError(getObjectType(object));
   }
   let result = true;
   for (const [key,val] of Object.entries(object)) {
@@ -166,7 +171,7 @@ const all = (object, callback) => {
 const Some = (object, callback) => {
 
   if (!isObject(object)) {
-    throw new TypeError(objectType(object));
+    throw new TypeError(getObjectType(object));
   }
   let result = false;
   for (const [key,val] of Object.entries(object)) {
@@ -185,5 +190,8 @@ export {
   merge,
   invert,
   all,
-  Some
+  Some,
+  isObject,
+  isObjectArray,
+  getObjectType
 };
