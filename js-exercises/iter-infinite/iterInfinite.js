@@ -15,15 +15,56 @@ const count = (start, step = 1) => {
   return generateCount(start, step);
 };
 
-const cycle = () => {};
+function* genCycle(seq) {
+  for (char of seq) {
+    yield char;
+  }
+  yield* genCycle(seq);
+}
 
-const repeat = () => {};
+const cycle = (seq) => {
+  if (typeof seq !== "string") {
+    throw TypeError(`Expected number in first argument, Found ${typeof start}`);
+  }
+  return genCycle(seq);
+};
 
-// console.log(count(-12, 2));
-// for (const item of count(-12, 2)) {
-//   if (item > 12) {
-//     break;
-//   }
-//   console.log(item);
-// }
+function* genRepeatedSeq(value, repeatCount) {
+  let limitRepeat = false;
+  if (repeatCount !== undefined) {
+    limitRepeat = true;
+  }
+
+  while (1) {
+    if (limitRepeat) {
+      if (repeatCount <= 0) {
+        break;
+      }
+    }
+    yield value;
+    repeatCount--;
+  }
+}
+
+const isPositiveNumber = (num) => {
+  if (typeof num !== "number" || num < 0 || num === Infinity) {
+    return false;
+  }
+  return true;
+};
+
+const repeat = (value, repeatCount) => {
+  if (value === null || value === undefined) {
+    throw TypeError(
+      `Expected object of any premitive type,  found : ${typeof value}`
+    );
+  }
+  if (!isPositiveNumber(repeatCount)) {
+    throw TypeError(
+      `Expected repeatCount positive number,  found : ${typeof repeatCount}`
+    );
+  }
+  return genRepeatedSeq(value, repeatCount);
+};
+
 export { count, cycle, repeat };
