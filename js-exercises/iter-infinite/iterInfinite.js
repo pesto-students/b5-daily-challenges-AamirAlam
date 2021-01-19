@@ -22,9 +22,16 @@ function* genCycle(seq) {
   yield* genCycle(seq);
 }
 
+const isIterable = (obj) => {
+  if (obj == null) {
+    return false;
+  }
+  return typeof obj[Symbol.iterator] === "function";
+};
+
 const cycle = (seq) => {
-  if (typeof seq !== "string") {
-    throw TypeError(`Expected number in first argument, Found ${typeof start}`);
+  if (!isIterable(seq)) {
+    throw TypeError(`Expected iterable , Found ${typeof start}`);
   }
   return genCycle(seq);
 };
