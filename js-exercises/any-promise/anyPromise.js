@@ -5,7 +5,9 @@ const isIterable = (obj) => {
   return typeof obj[Symbol.iterator] === "function";
 };
 
-//todo: replace Error with AggregateError it's definition error resolved
+//todo: 1. replace Error with AggregateError it's definition error resolved
+// 2. handle non promise item in promise list
+
 const anyPromises = (promises) => {
   if (!isIterable(promises) || promises.length === 0) {
     throw new Error(`Expected iterable found ${typeof promises}`);
@@ -16,7 +18,7 @@ const anyPromises = (promises) => {
 
     for (const pr of promises) {
       pr.then((res) => {
-        console.log(res);
+        // console.log(res);
         resolve(res);
       }).catch((err) => {
         rejected.push(err);
