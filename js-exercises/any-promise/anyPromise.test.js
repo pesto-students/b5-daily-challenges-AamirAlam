@@ -1,4 +1,4 @@
-import { anyPromises } from "./anyPromise";
+import { anyPromises, AggregateError } from "./anyPromise";
 
 const getSuccessPromise = (delay, msg) => {
   return new Promise((resolve, reject) => {
@@ -28,10 +28,14 @@ describe("anyPromise ", () => {
   it("Should resolve asynchronously  iterable contains no promises", async () => {
     await expect(anyPromises([1, 2, 3])).resolves.toBe(1);
   });
-  it("Should reject asynchronously  if all promises rejected   ", async () => {
-    await expect(anyPromises([Promise.reject("reject")])).rejects.toThrow(
-      Error
-    );
+  it("Should asynchronously rejects with an AggregateError  if all promises rejected   ", async () => {
+    await expect(
+      anyPromises([
+        Promise.reject("reject1"),
+        Promise.reject("reject2"),
+        Promise.reject("reject3"),
+      ])
+    ).rejects.toThrow(AggregateError);
   });
 
   it("Should reject asynchronously  if empty array passed  ", () => {

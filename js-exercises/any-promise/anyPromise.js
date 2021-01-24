@@ -5,11 +5,14 @@ const isIterable = (obj) => {
   return typeof obj[Symbol.iterator] === "function";
 };
 
-//todo: 1. replace Error with AggregateError it's definition error resolved
+function AggregateError(message = "") {
+  this.message = message;
+}
+AggregateError.prototype = Error.prototype;
 
 const anyPromises = (promises) => {
   if (!isIterable(promises)) {
-    throw new Error(`Expected iterable list found non iterable object`);
+    throw new TypeError(`Expected iterable list found non iterable object`);
   }
   promises = Array.from(promises);
   if (promises.length === 0) {
@@ -27,11 +30,11 @@ const anyPromises = (promises) => {
         .catch((err) => {
           rejected.push(err);
           if (rejected.length === promises.length) {
-            reject(new Error(rejected)); //
+            reject(new AggregateError(rejected)); //
           }
         });
     }
   });
 };
 
-export { anyPromises };
+export { anyPromises, AggregateError };
