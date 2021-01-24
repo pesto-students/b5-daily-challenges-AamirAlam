@@ -6,26 +6,30 @@ const isIterable = (obj) => {
 };
 
 //todo: 1. replace Error with AggregateError it's definition error resolved
-// 2. handle non promise item in promise list
 
 const anyPromises = (promises) => {
-  if (!isIterable(promises) || promises.length === 0) {
-    throw new Error(`Expected iterable found ${typeof promises}`);
+  if (!isIterable(promises)) {
+    throw new Error(`Expected iterable list found non iterable object`);
+  }
+  promises = Array.from(promises);
+  if (promises.length === 0) {
+    throw new Error(`Expected iterable list found non empty list`);
   }
 
   return new Promise((resolve, reject) => {
     const rejected = [];
 
     for (const pr of promises) {
-      pr.then((res) => {
-        // console.log(res);
-        resolve(res);
-      }).catch((err) => {
-        rejected.push(err);
-        if (rejected.length === promises.length) {
-          reject(new Error(rejected)); //
-        }
-      });
+      Promise.resolve(pr)
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((err) => {
+          rejected.push(err);
+          if (rejected.length === promises.length) {
+            reject(new Error(rejected)); //
+          }
+        });
     }
   });
 };

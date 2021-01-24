@@ -1,21 +1,37 @@
 import { anyPromises } from "./anyPromise";
 
-const promise1 = Promise.reject(0);
-const promise2 = new Promise((resolve) => setTimeout(resolve, 100, "quick"));
-const promise3 = new Promise((resolve) => setTimeout(resolve, 500, "slow"));
+const getSuccessPromise = (delay, msg) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(resolve, delay, msg);
+  });
+};
+
 describe("anyPromise ", () => {
   it("Should resolve the first promise resolved", async () => {
-    await expect(anyPromises([promise1, promise2, promise3])).resolves.toBe(
-      "quick"
-    );
+    await expect(
+      anyPromises([
+        getSuccessPromise(100, "quick"),
+        getSuccessPromise(1000, "slow"),
+        Promise.reject("reject"),
+      ])
+    ).resolves.toBe("quick");
   });
 
   it("Should resolve the only promise resolved", async () => {
-    await expect(anyPromises([promise1, promise3])).resolves.toBe("slow");
+    await expect(
+      anyPromises([getSuccessPromise(100, "quick"), Promise.reject("reject")])
+    ).resolves.toBe("quick");
   });
-
+  it("Should resolve asynchronously  iterable contains no promises", async () => {
+    await expect(anyPromises("lol")).resolves.toBe("l");
+  });
+  it("Should resolve asynchronously  iterable contains no promises", async () => {
+    await expect(anyPromises([1, 2, 3])).resolves.toBe(1);
+  });
   it("Should reject asynchronously  if all promises rejected   ", async () => {
-    await expect(anyPromises([promise1])).rejects.toThrow(Error);
+    await expect(anyPromises([Promise.reject("reject")])).rejects.toThrow(
+      Error
+    );
   });
 
   it("Should reject asynchronously  if empty array passed  ", () => {
@@ -33,7 +49,4 @@ describe("anyPromise ", () => {
   it("Should reject asynchronously  if non iterable object passed", () => {
     expect(() => anyPromises(123)).toThrow(Error);
   });
-  //   it("Should reject asynchronously  if string passed", () => {
-  //     expect(() => anyPromises("lol")).toThrow(Error);
-  //   });
 });
